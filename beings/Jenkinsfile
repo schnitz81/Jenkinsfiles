@@ -1,11 +1,12 @@
 pipeline {
-    agent any
+    agent linux
 
     stages {
     	stage('Clean workspace') {
 	    deleteDir();
 	}
 	stage('Checking dependencies') {
+
 	    echo 'Checking gcc.'
 	    if (fileExists('/usr/bin/gcc')) {
 	        echo 'gcc installed'
@@ -33,8 +34,8 @@ pipeline {
             steps {
                 echo 'Compiling...'
                 sh 'gcc -v -Wall -c ai.c'
-		sh 'gcc -v -Wall -c event.c'
 		sh 'gcc -v -Wall -c being.c'
+		sh 'gcc -v -Wall -c event.c'
 		sh 'gcc -v -Wall -c main.c'
 		sh 'gcc -v -Wall -c world.c'
 		sh 'gcc -v -o beings main.o ai.o event.o being.o world.o -lcurses'
@@ -48,13 +49,15 @@ pipeline {
                 fileExists('beings')
             }
         }
-        stage('Test-binary-runnable') {
+        stage('Stash binary') {
             steps {
-                echo 'Testing binary returning OK exit code...'
-                echo ''
-                echo 'Test run...'
-                sh './cproj'  // Binary must retun zero or will be interpreted as error. 
+                stash includes: 'beings', name: 'binary'
             }
         }
+	stage('Create appImage fs') {
+	    steps {
+		echo 'dev'
+	    }
+	}
     }
 }
