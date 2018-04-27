@@ -11,20 +11,19 @@ pipeline {
 	    steps {
 	        echo 'Checking gcc.'
 	        when { not {fileExists('/usr/bin/gcc') } }
-	            steps {
-		        echo 'Error: Cant find gcc.'
-		        Environment.Exit(1)
-	            }
+	        steps {
+	            echo 'Error: Cant find gcc.'
+	            Environment.Exit(1)
+	        }
 
 	        echo 'Checking curses.'
-   	        if (fileExists('/usr/include/curses.h')) {
-	            echo 'curses-dev installed'
-	        } else {
-	            echo 'Error: Cant find curses.'
-		    Environment.Exit(1)
-    	        }
+                when { not {fileExists('/usr/include/curses.h') } }
+                steps {
+                    echo 'Error: Cant find curses.'
+                    Environment.Exit(1)
+                }
+
 	    }
-	    
 	}
         stage('Checkout repo') {
             steps {
