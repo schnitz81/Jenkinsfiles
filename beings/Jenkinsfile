@@ -10,12 +10,11 @@ pipeline {
 	stage('Checking dependencies') {
 	    steps {
 	        echo 'Checking gcc.'
-	        if (fileExists('/usr/bin/gcc')) {
-	            echo 'gcc installed'
-	        } else {
-	            echo 'Error: Cant find gcc.'
-		    Environment.Exit(1)
-	        }
+	        when { not {fileExists('/usr/bin/gcc' } }
+	            steps {
+		        echo 'Error: Cant find gcc.'
+		        Environment.Exit(1)
+	            }
 
 	        echo 'Checking curses.'
    	        if (fileExists('/usr/include/curses.h')) {
