@@ -10,14 +10,14 @@ pipeline {
 	stage('Checking dependencies') {
 	    steps {
 	        echo 'Checking gcc.'
-	        when { not {fileExists('/usr/bin/gcc') } }
+	        when { not { fileExists('/usr/bin/gcc') } }
 	        steps {
 	            echo 'Error: Cant find gcc.'
 	            Environment.Exit(1)
 	        }
 
 	        echo 'Checking curses.'
-                when { not {fileExists('/usr/include/curses.h') } }
+                when { not { fileExists('/usr/include/curses.h') } }
                 steps {
                     echo 'Error: Cant find curses.'
                     Environment.Exit(1)
