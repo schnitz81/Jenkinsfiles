@@ -110,12 +110,12 @@ pipeline {
 		}
 		stage('Download appimagetool') {
 			steps {
-				sh 'wget https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage', returnStdout: true
+				sh 'wget https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
 			}
 		}
 		stage('Build appimage') {
 			steps {
-				sh './appimagetool-x86_64.AppImage -v ./beings-appfs beings-x86_64.AppImage', returnStdout: true
+				sh './appimagetool-x86_64.AppImage -v ./beings-appfs beings-x86_64.AppImage'
 			}
 		}
 		stage('Distribute appimage') {
