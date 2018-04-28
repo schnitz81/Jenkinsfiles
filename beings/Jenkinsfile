@@ -64,6 +64,14 @@ pipeline {
 	stage('Create appImage fs') {
 	    steps {
 		echo 'dev'
+		unstash 
+	    }
+	}
+	stage('') {
+	    steps {
+		dir('/tmp/') {
+		    unstash 'binary'
+		}
 	    }
 	}
     
