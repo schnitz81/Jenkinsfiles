@@ -48,15 +48,15 @@ pipeline {
 				sh 'gcc -v -o beings main.o ai.o event.o being.o world.o -lcurses'
 			}
 		}
-		stage('Test of binary existance') {
+		stage('Test of executable existance') {
 			steps {
 				echo 'Checking if file exists'
 				fileExists('beings')
 			}
 		}
-		stage('Stash binary and repo files') {
+		stage('Stash executable and repo files') {
 			steps {
-				stash includes: 'beings', name: 'binary'
+				stash includes: 'beings', name: 'executable'
 //				stash includes: 'icon.png', name: 'icon'
 //				stash includes: 'beings.desktop', name: 'desktop'
 //				stash includes: 'AppRun', name: 'apprun'
@@ -80,18 +80,22 @@ pipeline {
 				sh 'mkdir -pv beings-appfs/usr/bin'
 			}
 		}
-		stage('Solve and copy lib dependencies') {
+		stage('Unstash executable') {
 			steps {
-				echo "Copying libs..." 
-				sh "noOfLibs=`ldd beings | grep -ce '\\/lib\\(.*\\)\\ '`"
-				sh "echo $noOfLibs"
-				sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` beings-appfs/lib64/"
+				dir('beings-appfs/usr/bin') {
+					echo 'Unstashing and naming executable'
+					unstash 'executable'
+					sh 'mv beings beings.x64'
+				}
 			}
 		}
-		stage('Unstash binary') {
+		stage('Solve and copy lib dependencies') {
 			steps {
-				dir('/tmp/') {
-					unstash 'binary'
+				dir('beings-appfs/usr/bin') {
+					echo "Copying libs..." 
+					sh "noOfLibs=`ldd beings | grep -ce '\\/lib\\(.*\\)\\ '`"
+					sh "echo $noOfLibs"
+					sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` ../lib64/"
 				}
 			}
 		}
