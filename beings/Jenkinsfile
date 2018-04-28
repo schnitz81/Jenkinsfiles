@@ -8,23 +8,27 @@ pipeline {
 	    }
 	}
 	stage('Checking gcc availability') {
-//	    steps {
-                 if(fileExists('/usr/bin/gcc')) {
-		     echo 'gcc found'
-		 } else {
-	             echo 'Error: Cant find gcc.'
-	             Environment.Exit(1)
-		 }
-//	    }
+	    steps {
+	        script {
+                    if(fileExists('/usr/bin/gcc')) {
+    		        echo 'gcc found'
+		    } else {
+	                echo 'Error: Cant find gcc.'
+	                Environment.Exit(1)
+		    }
+		}
+	    }
 	}
 	stage('Checking curses availability') {
             steps {
-                if(fileExists('/usr/include/curses.h')) {
-	            echo 'curses found.'
-	        } else {
-                    echo 'Error: Cant find curses.'
-                    Environment.Exit(1)
-                }
+	        script {
+                    if(fileExists('/usr/include/curses.h')) {
+	                echo 'curses found.'
+	            } else {
+                        echo 'Error: Cant find curses.'
+                        Environment.Exit(1)
+                    }
+		}
 	    }
 	}
         stage('Checkout repo') {
