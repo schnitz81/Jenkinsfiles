@@ -8,24 +8,20 @@ pipeline {
 	    }
 	}
 	stage('Checking gcc availability') {
-//	    steps {
-//	        echo 'Checking gcc.'
-	        when { not { fileExists('/usr/bin/gcc') } }
-	        steps {
-	            echo 'Error: Cant find gcc.'
-	            Environment.Exit(1)
-	        }
-	    }	
+            when { not { fileExists('/usr/bin/gcc') } }
+	    steps {
+	        echo 'Error: Cant find gcc.'
+	        Environment.Exit(1)
+	    }
+	    	
 	}
 	stage('Checking curses availability') {
-//	        echo 'Checking curses.'
-                when { not { fileExists('/usr/include/curses.h') } }
-                steps {
-                    echo 'Error: Cant find curses.'
-                    Environment.Exit(1)
-                }
+            when { not { fileExists('/usr/include/curses.h') } }
+            steps {
+                echo 'Error: Cant find curses.'
+                Environment.Exit(1)
+            }
 
-//	    }
 	}
         stage('Checkout repo') {
             steps {
@@ -62,5 +58,6 @@ pipeline {
 		echo 'dev'
 	    }
 	}
+    
     }
 }
