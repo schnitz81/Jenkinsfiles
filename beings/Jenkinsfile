@@ -58,7 +58,7 @@ pipeline {
 				echo 'Checking if file exists.'
 				fileExists('beings')
 				echo 'Stashing executable.'
-				stash includes: 'beings', name: 'executable'
+				stash includes: 'beings.x64', name: 'executable'
 			}
 		}
 		stage('Clean workspace before appImage deps preparation') {
