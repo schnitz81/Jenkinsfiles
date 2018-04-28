@@ -57,9 +57,9 @@ pipeline {
 		stage('Stash binary and repo files') {
 			steps {
 				stash includes: 'beings', name: 'binary'
-				stash includes: 'icon.png', name: 'icon'
-				stash includes: 'beings.desktop', name: 'desktop'
-				stash includes: 'AppRun', name: 'apprun'
+//				stash includes: 'icon.png', name: 'icon'
+//				stash includes: 'beings.desktop', name: 'desktop'
+//				stash includes: 'AppRun', name: 'apprun'
 			}
 		}
 		stage('Clean workspace before appImage deps preparation') {
