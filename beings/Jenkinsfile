@@ -83,7 +83,7 @@ pipeline {
 		stage('Solve and copy lib dependencies') {
 			steps {
 				echo "Copying libs..." 
-				sh "noOfLibs=`ldd beings | grep -ce '\/lib\(.*\)\ '`"
+				sh "noOfLibs=`ldd beings | grep -ce '\\/lib\\(.*\)\\ '`"
 				sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\/lib\(.*\)\ ' | head -n $i | tail -n 1` beings-appfs/lib64/"
 			}
 		}
