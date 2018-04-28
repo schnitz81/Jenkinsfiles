@@ -116,7 +116,7 @@ pipeline {
 		}
 		stage('Build appimage') {
 			steps {
-				sh './appimagetool-x86_64.AppImage -v ./beings-appfs beings-x86_64.AppImage'
+				sh 'ARCH=x86_64 ./appimagetool-x86_64.AppImage -v ./beings-appfs beings-x86_64.AppImage'
 			}
 		}
 		stage('Distribute appimage') {
