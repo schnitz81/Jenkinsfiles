@@ -121,7 +121,7 @@ pipeline {
 		}
 		stage('Distribute appimage') {
 			steps {
-				sh 'beings*.AppImage ${ARTIFACT_FOLDER}'
+				sh 'mv -v beings*.AppImage ${ARTIFACT_FOLDER}/'
 			}
 		}
     }
