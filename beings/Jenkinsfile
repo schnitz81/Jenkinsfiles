@@ -50,21 +50,15 @@ pipeline {
 				sh 'gcc -v -Wall -c event.c'
 				sh 'gcc -v -Wall -c main.c'
 				sh 'gcc -v -Wall -c world.c'
-				sh 'gcc -v -o beings main.o ai.o event.o being.o world.o -lcurses'
+				sh 'gcc -v -o beings.x64 main.o ai.o event.o being.o world.o -lcurses'
 			}
 		}
-		stage('Test of executable existance') {
+		stage('Stash executable') {
 			steps {
-				echo 'Checking if file exists'
+				echo 'Checking if file exists.'
 				fileExists('beings')
-			}
-		}
-		stage('Stash executable and repo files') {
-			steps {
+				echo 'Stashing executable.'
 				stash includes: 'beings', name: 'executable'
-//				stash includes: 'icon.png', name: 'icon'
-//				stash includes: 'beings.desktop', name: 'desktop'
-//				stash includes: 'AppRun', name: 'apprun'
 			}
 		}
 		stage('Clean workspace before appImage deps preparation') {
@@ -99,7 +93,6 @@ pipeline {
 				dir('beings-appfs/usr/bin') {
 					echo 'Unstashing and naming executable'
 					unstash 'executable'
-					sh 'mv beings beings.x64'
 				}
 			}
 		}
@@ -115,6 +108,20 @@ pipeline {
 				}
 			}
 		}
-
+		stage('Download appimagetool') {
+			steps {
+				sh 'wget https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage', returnStdout: true
+			}
+		}
+		stage('Build appimage') {
+			steps {
+				sh './appimagetool-x86_64.AppImage -v ./beings-appfs beings-x86_64.AppImage', returnStdout: true
+			}
+		}
+		stage('Distribute appimage') {
+			steps {
+				sh 'beings*.AppImage ${ARTIFACT_FOLDER}'
+			}
+		}
     }
 }
