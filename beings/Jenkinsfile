@@ -61,17 +61,16 @@ pipeline {
                 stash includes: 'beings', name: 'binary'
             }
         }
-	stage('Create appImage fs') {
-	    steps {
-		echo 'dev'
-		unstash 
-	    }
-	}
-	stage('') {
+	stage('Unstash binary') {
 	    steps {
 		dir('/tmp/') {
 		    unstash 'binary'
 		}
+	    }
+	}
+	stage('Create appImage fs') {
+	    steps {
+		echo 'dev'
 	    }
 	}
     
