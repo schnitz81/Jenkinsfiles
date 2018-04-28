@@ -1,5 +1,10 @@
 pipeline {
 	agent any 
+	
+	environment {
+		// Choose destination folder to place built appImage in:
+		ARTIFACT_FOLDER = '/tmp'
+	}
 
 	stages {
 		stage('Clean workspace') {
@@ -80,6 +85,15 @@ pipeline {
 				sh 'mkdir -pv beings-appfs/usr/bin'
 			}
 		}
+		stage('Put appimage files in appfs') {
+			steps {
+				echo "Putting necessary appimage files in appfs..."
+				sh 'mv -v beings/AppRun beings-appfs/'
+				sh 'mv -v beings/beings.desktop beings-appfs/'
+				sh 'mv -v beings/icon.png beings-appfs/'
+			}
+		}
+		
 		stage('Unstash executable') {
 			steps {
 				dir('beings-appfs/usr/bin') {
@@ -93,9 +107,9 @@ pipeline {
 			steps {
 				dir('beings-appfs/usr/bin') {
 					echo "Copying libs..." 
-					sh "noOfLibs=`ldd beings | grep -ce '\\/lib\\(.*\\)\\ '`"
-					sh "echo $noOfLibs"
-					sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` ../lib64/"
+					sh "noOfLibs=`ldd beings.x64 | grep -ce '\\/lib\\(.*\\)\\ '`"
+					sh "echo '$noOfLibs libs to be copied.'"
+					sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` ../lib64/"
 				}
 			}
 		}
