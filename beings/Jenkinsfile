@@ -107,9 +107,9 @@ pipeline {
 			steps {
 				dir('beings-appfs/usr/bin') {
 					echo "Copying libs..." 
-					sh "noOfLibs=`ldd beings.x64 | grep -ce '\\/lib\\(.*\\)\\ '` \
-					echo $noOfLibs libs to be copied. \
-					for i in `seq 1 $noOfLibs`; do cp -v `ldd beings.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` ../lib64/"
+					sh "noOfLibs=`ldd beings.x64 | grep -ce '\\/lib\\(.*\\)\\ '`"
+					sh "echo $noOfLibs libs to be copied."
+					sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` ../lib64/"
 				}
 			}
 		}
