@@ -111,6 +111,7 @@ pipeline {
 		stage('Download appimagetool') {
 			steps {
 				sh 'wget https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage'
+				sh 'chmod -v +x appimagetool-x86_64.AppImage'
 			}
 		}
 		stage('Build appimage') {
