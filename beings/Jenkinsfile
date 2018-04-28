@@ -9,7 +9,7 @@ pipeline {
 	}
 	stage('Checking gcc availability') {
 	    steps {
-                 if(fileExists('/usr/bin/gcc') {
+                 if(fileExists('/usr/bin/gcc')) {
 		     echo 'gcc found'
 		 } else {
 	             echo 'Error: Cant find gcc.'
@@ -19,7 +19,7 @@ pipeline {
 	}
 	stage('Checking curses availability') {
             steps {
-                if(fileExists('/usr/include/curses.h') {
+                if(fileExists('/usr/include/curses.h')) {
 	            echo 'curses found.'
 	        } else {
                     echo 'Error: Cant find curses.'
