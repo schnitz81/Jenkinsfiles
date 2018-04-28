@@ -85,7 +85,7 @@ pipeline {
 				echo "Copying libs..." 
 				sh "noOfLibs=`ldd beings | grep -ce '\\/lib\\(.*\\)\\ '`"
 				sh "echo $noOfLibs"
-				sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\/lib\(.*\)\ ' | head -n $i | tail -n 1` beings-appfs/lib64/"
+				sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\\/lib\\(.*\\)\\ ' | head -n $i | tail -n 1` beings-appfs/lib64/"
 			}
 		}
 		stage('Unstash binary') {
