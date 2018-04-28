@@ -61,11 +61,6 @@ pipeline {
 				stash includes: 'beings', name: 'binary'
 			}
 		}
-		stage('Clean workspace') {
-			steps {
-				deleteDir();
-			}
-		}
 		stage('Create appImage fs') {
 			steps {
 				dir ('foo') {
