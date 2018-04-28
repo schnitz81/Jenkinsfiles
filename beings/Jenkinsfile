@@ -8,14 +8,14 @@ pipeline {
 	    }
 	}
 	stage('Checking gcc availability') {
-	    steps {
+//	    steps {
                  if(fileExists('/usr/bin/gcc')) {
 		     echo 'gcc found'
 		 } else {
 	             echo 'Error: Cant find gcc.'
 	             Environment.Exit(1)
 		 }
-	    }
+//	    }
 	}
 	stage('Checking curses availability') {
             steps {
