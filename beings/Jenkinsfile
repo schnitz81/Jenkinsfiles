@@ -50,22 +50,41 @@ pipeline {
 		}
 		stage('Test of binary existance') {
 			steps {
-				echo 'Testing...'
-				echo '******'
 				echo 'Checking if file exists'
 				fileExists('beings')
 			}
 		}
-		stage('Stash binary') {
+		stage('Stash binary and repo files') {
 			steps {
 				stash includes: 'beings', name: 'binary'
+				stash includes: 'icon.png' name: 'icon'
+				stash includes: 'beings.desktop' name: 'desktop'
+				stash includes: 'AppRun' name: 'apprun'
+			}
+		}
+		stage('Clean workspace before appImage deps preparation') {
+			steps {
+    	        deleteDir();
+			}
+		}
+		stage('Checkout of appImage deps') {
+			steps {
+				echo 'Cloning Jenkins repo'
+				git url: 'https://github.com/schnitz81/Jenkinsfiles.git'
 			}
 		}
 		stage('Create appImage fs') {
 			steps {
-				dir ('foo') {
-					writeFile file:'dummyfile', text:'hej'
-				}
+				echo "Creating fs for appImage"
+				sh 'mkdir -pv beings-appfs/lib64'
+				sh 'mkdir -pv beings-appfs/usr/bin'
+			}
+		}
+		stage('Solve and copy lib dependencies') {
+			steps {
+				echo "Copying libs..." 
+				sh "noOfLibs=`ldd beings | grep -ce '\/lib\(.*\)\ '`"
+				sh "for i in `seq 1 $noOfLibs`; do cp -v `ldd beings | grep -oe '\/lib\(.*\)\ ' | head -n $i | tail -n 1` beings-appfs/lib64/"
 			}
 		}
 		stage('Unstash binary') {

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=beings
+Comment=Scaleable multibeings simulator with individual AI.
+Icon=icon
+Exec=beings.x64
+Terminal=true
+Type=Application
+Categories=Game;
+
