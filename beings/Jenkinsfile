@@ -1,78 +1,85 @@
 pipeline {
-    agent any 
+	agent any 
 
-    stages {
-    	stage('Clean workspace') {
-	    steps {
+	stages {
+		stage('Clean workspace') {
+			steps {
     	        deleteDir();
-	    }
-	}
-	stage('Checking gcc availability') {
-	    steps {
-	        script {
-                    if(fileExists('/usr/bin/gcc')) {
-    		        echo 'gcc found'
-		    } else {
-	                echo 'Error: Cant find gcc.'
-	                Environment.Exit(1)
-		    }
+			}
 		}
-	    }
-	}
-	stage('Checking curses availability') {
-            steps {
-	        script {
-                    if(fileExists('/usr/include/curses.h')) {
-	                echo 'curses found.'
-	            } else {
-                        echo 'Error: Cant find curses.'
-                        Environment.Exit(1)
-                    }
+		stage('Checking gcc availability') {
+			steps {
+				script {
+					if(fileExists('/usr/bin/gcc')) {
+						echo 'gcc found'
+					} else {
+						echo 'Error: Cant find gcc.'
+						Environment.Exit(1)
+					}
+				}
+			}
 		}
-	    }
-	}
-        stage('Checkout repo') {
-            steps {
-	        echo 'Cloning beings repo'
-                git url: 'https://github.com/schnitz81/beings.git'
-            }
-        }
+		stage('Checking curses availability') {
+				steps {
+				script {
+					if(fileExists('/usr/include/curses.h')) {
+						echo 'curses found.'
+					} else {
+						echo 'Error: Cant find curses.'
+						Environment.Exit(1)
+					}
+				}
+			}
+		}
+		stage('Checkout repo') {
+			steps {
+				echo 'Cloning beings repo'
+				git url: 'https://github.com/schnitz81/beings.git'
+			}
+		}
         stage('Compile') {
-            steps {
-                echo 'Compiling...'
-                sh 'gcc -v -Wall -c ai.c'
-		sh 'gcc -v -Wall -c being.c'
-		sh 'gcc -v -Wall -c event.c'
-		sh 'gcc -v -Wall -c main.c'
-		sh 'gcc -v -Wall -c world.c'
-		sh 'gcc -v -o beings main.o ai.o event.o being.o world.o -lcurses'
-            }
-        }
-        stage('Test of binary existance') {
-            steps {
-                echo 'Testing...'
-                echo '******'
-                echo 'Checking if file exists'
-                fileExists('beings')
-            }
-        }
-        stage('Stash binary') {
-            steps {
-                stash includes: 'beings', name: 'binary'
-            }
-        }
-	stage('Unstash binary') {
-	    steps {
-		dir('/tmp/') {
-		    unstash 'binary'
+			steps {
+				echo 'Compiling...'
+				sh 'gcc -v -Wall -c ai.c'
+				sh 'gcc -v -Wall -c being.c'
+				sh 'gcc -v -Wall -c event.c'
+				sh 'gcc -v -Wall -c main.c'
+				sh 'gcc -v -Wall -c world.c'
+				sh 'gcc -v -o beings main.o ai.o event.o being.o world.o -lcurses'
+			}
 		}
-	    }
-	}
-	stage('Create appImage fs') {
-	    steps {
-		echo 'dev'
-	    }
-	}
-    
+		stage('Test of binary existance') {
+			steps {
+				echo 'Testing...'
+				echo '******'
+				echo 'Checking if file exists'
+				fileExists('beings')
+			}
+		}
+		stage('Stash binary') {
+			steps {
+				stash includes: 'beings', name: 'binary'
+			}
+		}
+		stage('Clean workspace') {
+			steps {
+				deleteDir();
+			}
+		}
+		stage('Create appImage fs') {
+			steps {
+				dir ('foo') {
+					writeFile file:'dummyfile', text:'hej'
+				}
+			}
+		}
+		stage('Unstash binary') {
+			steps {
+				dir('/tmp/') {
+					unstash 'binary'
+				}
+			}
+		}
+
     }
 }
