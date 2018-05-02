@@ -83,6 +83,7 @@ pipeline {
 			steps {
 				echo "Putting necessary appimage files in appfs..."
 				sh 'mv -v beings/AppRun beings-appfs/'
+				sh 'chmod a+x beings-appfs/AppRun'
 				sh 'mv -v beings/beings.desktop beings-appfs/'
 				sh 'mv -v beings/icon.png beings-appfs/'
 			}
