@@ -116,8 +116,8 @@ pipeline {
 					sh script: """
 					   noOfLibs=`ldd textmode-lifestyle.x64 | grep -ce '\\/lib\\(.*\\)\\ '`
 					   echo \$noOfLibs libs to be copied.
-					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
-					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe '\\/usr\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe ' \\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe ' \\/usr\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done
 					""", returnStdout: true
 				}
 			}
