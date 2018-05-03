@@ -88,7 +88,7 @@ pipeline {
 			steps {
 				echo "Creating fs for appImage"
 				sh 'mkdir -pv textmode-lifestyle-appfs/usr/lib'
-				sh 'mkdir -pv textnode.lifestyle-appfs/usr/bin'
+				sh 'mkdir -pv textmode.lifestyle-appfs/usr/bin'
 			}
 		}
 		stage('Put appimage files in appfs') {
