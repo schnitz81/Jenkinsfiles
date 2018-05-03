@@ -36,27 +36,41 @@ pipeline {
 				}
 			}
 		}
+		stage('Checking mikmod availability') {
+				steps {
+				script {
+					if(fileExists('/usr/include/mikmod.h')) {
+						echo 'mikmod found.'
+					} else {
+						echo 'Error: Cant find mikmod. Install mikmod dev package.'
+						Environment.Exit(1)
+					}
+				}
+			}
+		}
 		stage('Checkout repo') {
 			steps {
 				echo 'Cloning beings repo'
-				git url: 'https://github.com/schnitz81/beings.git'
+				git url: 'https://github.com/schnitz81/textmode-lifestyle.git'
 			}
 		}
         stage('Compile') {
 			steps {
 				echo 'Compiling...'
-				sh 'gcc -v -Wall -c ai.c'
-				sh 'gcc -v -Wall -c being.c'
-				sh 'gcc -v -Wall -c event.c'
 				sh 'gcc -v -Wall -c main.c'
-				sh 'gcc -v -Wall -c world.c'
-				sh 'gcc -v -o beings.x64 main.o ai.o event.o being.o world.o -lcurses'
+				sh 'gcc -v -Wall -c loop.c'
+				sh 'gcc -v -Wall -c bouncer.c'
+				sh 'gcc -v -Wall -c scroller.c'
+				sh 'gcc -v -Wall -c dotbar.c'
+				sh 'gcc -v -Wall -c banner.c'
+				sh 'gcc -v -Wall -c tune.c'
+				sh 'gcc -v -o textmode-lifestyle.x64 main.o loop.o bouncer.o scroller.o dotbar.o banner.o tune.o -lcurses -lmikmod -lpthread'
 			}
 		}
 		stage('Stash executable') {
 			steps {
 				echo 'Stashing executable.'
-				stash includes: 'beings.x64', name: 'executable'
+				stash includes: 'textmode-lifestyle.x64', name: 'executable'
 			}
 		}
 		stage('Clean workspace before appImage deps preparation') {
@@ -73,23 +87,23 @@ pipeline {
 		stage('Create appImage fs') {
 			steps {
 				echo "Creating fs for appImage"
-				sh 'mkdir -pv beings-appfs/usr/lib'
+				sh 'mkdir -pv textmode-lifestyle-appfs/usr/lib'
 				sh 'mkdir -pv beings-appfs/usr/bin'
 			}
 		}
 		stage('Put appimage files in appfs') {
 			steps {
 				echo "Putting necessary appimage files in appfs..."
-				sh 'mv -v beings/AppRun beings-appfs/'
-				sh 'chmod a+x beings-appfs/AppRun'
-				sh 'mv -v beings/beings.desktop beings-appfs/'
-				sh 'mv -v beings/icon.png beings-appfs/'
+				sh 'mv -v textmode-lifestyle/AppRun textmode-lifestyle-appfs/'
+				sh 'chmod a+x textmode-lifestyle-appfs/AppRun'
+				sh 'mv -v textmode-lifestyle/textmode-lifestyle.desktop textmode-lifestyle-appfs/'
+				sh 'mv -v textmode-lifestyle/icon.png textmode-lifestyle-appfs/'
 			}
 		}
 		
 		stage('Unstash executable') {
 			steps {
-				dir('beings-appfs/usr/bin') {
+				dir('textmode-lifestyle-appfs/usr/bin') {
 					echo 'Unstashing and naming executable'
 					unstash 'executable'
 				}
@@ -97,12 +111,13 @@ pipeline {
 		}
 		stage('Solve and copy lib dependencies') {
 			steps {
-				dir('beings-appfs/usr/bin') {
+				dir('textmode-lifestyle-appfs/usr/bin') {
 					echo "Copying libs..." 
 					sh script: """
-					   noOfLibs=`ldd beings.x64 | grep -ce '\\/lib\\(.*\\)\\ '`
+					   noOfLibs=`ldd textmode-lifestyle.x64 | grep -ce '\\/lib\\(.*\\)\\ '`
 					   echo \$noOfLibs libs to be copied.
-					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd beings.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe '\\/usr\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done
 					""", returnStdout: true
 				}
 			}
@@ -115,12 +130,12 @@ pipeline {
 		}
 		stage('Build appimage') {
 			steps {
-				sh 'ARCH=x86_64 ./appimagetool-x86_64.AppImage -v ./beings-appfs beings-x86_64.AppImage'
+				sh 'ARCH=x86_64 ./appimagetool-x86_64.AppImage -v ./textmode-lifestyle-appfs textmode-lifestyle-x86_64.AppImage'
 			}
 		}
 		stage('Distribute appimage') {
 			steps {
-				sh 'mv -v beings*.AppImage ${ARTIFACT_FOLDER}/'
+				sh 'mv -v textmode-lifestyle*.AppImage ${ARTIFACT_FOLDER}/'
 			}
 		}
     }
