@@ -115,11 +115,11 @@ pipeline {
 					echo "Copying libs..." 
 					sh script: """
 					   noOfLibs=`ldd textmode-lifestyle.x64 | grep -ce ' \\/lib\\(.*\\)\\ '`
-					   echo \$noOfLibs libs in \/lib to be copied.
+					   echo \$noOfLibs libs in /lib to be copied.
 					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe ' \\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
 
 					   noOfLibs=`ldd textmode-lifestyle.x64 | grep -ce ' \\/usr\\/lib\\(.*\\)\\ '`
-					   echo \$noOfLibs libs in \/usr\/lib to be copied.
+					   echo \$noOfLibs libs in /usr/lib to be copied.
 					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe ' \\/usr\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done
 					""", returnStdout: true
 				}
