@@ -63,7 +63,7 @@ pipeline {
 				sh 'gcc -v -Wall -c scroller.c'
 				sh 'gcc -v -Wall -c dotbar.c'
 				sh 'gcc -v -Wall -c banner.c'
-				sh 'gcc -v -Wall -c tune.c'
+				sh 'gcc -v -DPACKAGE -Wall -c tune.c'
 				sh 'gcc -v -o textmode-lifestyle.x64 main.o loop.o bouncer.o scroller.o dotbar.o banner.o tune.o -lcurses -lmikmod -lpthread'
 			}
 		}
@@ -71,6 +71,8 @@ pipeline {
 			steps {
 				echo 'Stashing executable.'
 				stash includes: 'textmode-lifestyle.x64', name: 'executable'
+				echo 'Stashing tune'
+				stash includes: 'tune.dat', name: 'tune'
 			}
 		}
 		stage('Clean workspace before appImage deps preparation') {
@@ -89,6 +91,7 @@ pipeline {
 				echo "Creating fs for appImage"
 				sh 'mkdir -pv textmode-lifestyle-appfs/usr/lib'
 				sh 'mkdir -pv textmode-lifestyle-appfs/usr/bin'
+				sh 'mkdir -pv textmode-lifestyle-appfs/usr/share/textmode-lifestyle'
 			}
 		}
 		stage('Put appimage files in appfs') {
@@ -101,11 +104,15 @@ pipeline {
 			}
 		}
 		
-		stage('Unstash executable') {
+		stage('Unstash artifacts') {
 			steps {
 				dir('textmode-lifestyle-appfs/usr/bin') {
-					echo 'Unstashing and naming executable'
+					echo 'Unstashing executable'
 					unstash 'executable'
+				}
+				dir('textmode-lifestyle-appfs/usr/share/textmode-lifestyle') {
+					echo 'Unstashing tune'
+					unstash 'tune'
 				}
 			}
 		}
