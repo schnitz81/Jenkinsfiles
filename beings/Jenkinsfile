@@ -50,13 +50,13 @@ pipeline {
 				sh 'gcc -v -Wall -c event.c'
 				sh 'gcc -v -Wall -c main.c'
 				sh 'gcc -v -Wall -c world.c'
-				sh 'gcc -v -o beings.x64 main.o ai.o event.o being.o world.o -lcurses'
+				sh 'gcc -v -o beings main.o ai.o event.o being.o world.o -lcurses'
 			}
 		}
 		stage('Stash executable') {
 			steps {
 				echo 'Stashing executable.'
-				stash includes: 'beings.x64', name: 'executable'
+				stash includes: 'beings', name: 'executable'
 			}
 		}
 		stage('Clean workspace before appImage deps preparation') {
@@ -100,9 +100,9 @@ pipeline {
 				dir('beings-appfs/usr/bin') {
 					echo "Copying libs..." 
 					sh script: """
-					   noOfLibs=`ldd beings.x64 | grep -ce '\\/lib\\(.*\\)\\ '`
+					   noOfLibs=`ldd beings | grep -ce '\\/lib\\(.*\\)\\ '`
 					   echo \$noOfLibs libs to be copied.
-					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd beings.x64 | grep -oe '\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd beings | grep -oe '\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
 					""", returnStdout: true
 				}
 			}

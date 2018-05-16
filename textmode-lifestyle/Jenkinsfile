@@ -57,20 +57,20 @@ pipeline {
         stage('Compile') {
 			steps {
 				echo 'Compiling...'
-				sh 'gcc -v -Wall -c main.c'
-				sh 'gcc -v -Wall -c loop.c'
-				sh 'gcc -v -Wall -c bouncer.c'
-				sh 'gcc -v -Wall -c scroller.c'
-				sh 'gcc -v -Wall -c dotbar.c'
-				sh 'gcc -v -Wall -c banner.c'
-				sh 'gcc -v -DPACKAGE -Wall -c tune.c'
-				sh 'gcc -v -o textmode-lifestyle.x64 main.o loop.o bouncer.o scroller.o dotbar.o banner.o tune.o -lcurses -lmikmod -lpthread'
+				sh 'gcc -g -v -Wall -c main.c'
+				sh 'gcc -g -v -Wall -c loop.c'
+				sh 'gcc -g -v -Wall -c bouncer.c'
+				sh 'gcc -g -v -Wall -c scroller.c'
+				sh 'gcc -g -v -Wall -c dotbar.c'
+				sh 'gcc -g -v -Wall -c banner.c'
+				sh 'gcc -g -v -DPACKAGE -Wall -c tune.c'
+				sh 'gcc -g -v -o textmode-lifestyle main.o loop.o bouncer.o scroller.o dotbar.o banner.o tune.o -lcurses -lmikmod -lpthread'
 			}
 		}
 		stage('Stash executable') {
 			steps {
 				echo 'Stashing executable.'
-				stash includes: 'textmode-lifestyle.x64', name: 'executable'
+				stash includes: 'textmode-lifestyle', name: 'executable'
 				echo 'Stashing tune'
 				stash includes: 'tune.dat', name: 'tune'
 			}
@@ -121,13 +121,13 @@ pipeline {
 				dir('textmode-lifestyle-appfs/usr/bin') {
 					echo "Copying libs..." 
 					sh script: """
-					   noOfLibs=`ldd textmode-lifestyle.x64 | grep -ce ' \\/lib\\(.*\\)\\ '`
+					   noOfLibs=`ldd textmode-lifestyle | grep -ce ' \\/lib\\(.*\\)\\ '`
 					   echo \$noOfLibs libs in /lib to be copied.
-					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe ' \\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle | grep -oe ' \\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done 
 
-					   noOfLibs=`ldd textmode-lifestyle.x64 | grep -ce ' \\/usr\\/lib\\(.*\\)\\ '`
+					   noOfLibs=`ldd textmode-lifestyle | grep -ce ' \\/usr\\/lib\\(.*\\)\\ '`
 					   echo \$noOfLibs libs in /usr/lib to be copied.
-					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle.x64 | grep -oe ' \\/usr\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done
+					   for i in `seq 1 \$noOfLibs`; do cp -v `ldd textmode-lifestyle | grep -oe ' \\/usr\\/lib\\(.*\\)\\ ' | head -n \$i | tail -n 1` ../lib/ ; done
 					""", returnStdout: true
 				}
 			}
