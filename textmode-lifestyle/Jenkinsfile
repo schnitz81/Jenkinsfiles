@@ -9,7 +9,7 @@ pipeline {
 	stages {
 		stage('Clean workspace') {
 			steps {
-    	        deleteDir();
+				deleteDir();
 			}
 		}
 		stage('Checking gcc availability') {
